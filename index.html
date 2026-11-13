@@ -25,6 +25,7 @@ button,input{font:inherit}button{cursor:pointer}
 h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}.section-head h2{font-size:15px;margin:0}.tiny{font-size:11px;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.metric-click{cursor:pointer;transition:border-color .15s,transform .15s}.metric-click:hover,.metric-click:focus{border-color:var(--blue);outline:none;transform:translateY(-1px)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px;min-width:0}
 .metric-label{color:var(--muted);font-size:12px}.metric{font-size:27px;font-weight:750;margin:12px 0 5px}.metric-foot{font-size:11px;color:var(--green)}
 .two{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
@@ -96,8 +97,8 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
     <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance</p>
     <div class="section-head"><h2>Dashboard overview</h2><span class="tiny" id="updated">Last updated: just now</span></div>
     <div class="grid">
-      <div class="card"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
-      <div class="card"><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Calls logged: 20. Open storage notice" data-open-storage><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Messages logged: 120. Open storage notice" data-open-storage><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
       <div class="card"><div class="metric-label">Location logs</div><div class="metric">—</div><div class="metric-foot">Sample data only</div></div>
       <div class="card"><div class="metric-label">Firewall traffic</div><div class="metric">1.2k</div><div class="metric-foot">Within normal range</div></div>
     </div>
@@ -147,7 +148,7 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
       <span class="plan-price">$700</span>
     </label>
     <button class="modal-proceed" id="planProceed" type="button">Proceed</button>
-    <p class="plan-disclosure">Preview only: these are sample plan details. No payment will be taken and no storage will be activated.</p>
+    <p class="plan-disclosure">This notice is a display message only; storage capacity and sync status are not verified.</p>
   </div>
 </div>
 <div class="modal-backdrop" id="planConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
@@ -197,6 +198,13 @@ function openPage(pageName){
   const page=document.getElementById('page-'+pageName);
   if(page) page.classList.add('active');
 }
+document.querySelectorAll('[data-open-storage]').forEach(card=>{
+  const openNotice=()=>showStorageNotice('overview');
+  card.addEventListener('click',openNotice);
+  card.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openNotice();}
+  });
+});
 document.querySelectorAll('[data-page]').forEach(link=>link.addEventListener('click',e=>{
   e.preventDefault();
   showStorageNotice(link.dataset.page);
