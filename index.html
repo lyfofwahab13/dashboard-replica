@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DashV23 — Dashboard</title>
+<style>
+:root{--bg:#0b0e13;--panel:#111720;--panel2:#151e29;--line:#222d3a;--muted:#8290a1;--text:#e9eef5;--blue:#4c8dff;--green:#32c48d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input{font:inherit}button{cursor:pointer}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(ellipse at 50% 20%,#17263a 0,transparent 55%),var(--bg)}
+.login-card{width:min(420px,100%);padding:34px;border:1px solid var(--line);border-radius:18px;background:#101720;box-shadow:0 24px 80px #0008}
+.brand{font-weight:800;letter-spacing:.14em;font-size:15px}.brand span{color:var(--blue)}
+.login-card h1{font-size:24px;margin:34px 0 8px}.muted{color:var(--muted)}.login-card p{line-height:1.55}
+.field{display:flex;gap:8px;margin-top:24px}.field input{min-width:0;flex:1;background:#0b1119;border:1px solid var(--line);border-radius:9px;padding:13px;color:var(--text);outline:none}.field input:focus{border-color:var(--blue)}
+.primary{border:0;background:var(--blue);color:white;border-radius:9px;padding:12px 16px;font-weight:700}.error{color:#ff8585;min-height:20px;margin-top:12px;font-size:12px}
+#app{display:none;min-height:100vh}.sidebar{width:240px;position:fixed;inset:0 auto 0 0;background:#0e141c;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;z-index:3}
+.sidebar .brand{padding:4px 12px 28px}.nav-label{font-size:10px;color:#657386;letter-spacing:.14em;padding:12px}
+.nav{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:9px;color:#9ba8b8;text-decoration:none;margin:2px 0;font-size:13px}
+.nav:hover,.nav.active{background:#1a2a40;color:#fff}.nav.active{box-shadow:inset 2px 0 var(--blue)}
+.nav .ico{width:18px;text-align:center;color:#8ca3c0}.sidebar-bottom{margin-top:auto}
+.main{margin-left:240px;padding:24px 30px 44px;max-width:1600px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+.search{width:min(360px,55vw);background:#111923;border:1px solid var(--line);border-radius:9px;padding:11px 14px;color:var(--text)}
+.top-actions{display:flex;gap:10px;align-items:center}.ghost{background:#151e29;color:#c7d1de;border:1px solid var(--line);border-radius:8px;padding:10px 13px}
+h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}.section-head h2{font-size:15px;margin:0}.tiny{font-size:11px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:17px;min-width:0}
+.metric-label{color:var(--muted);font-size:12px}.metric{font-size:27px;font-weight:750;margin:12px 0 5px}.metric-foot{font-size:11px;color:var(--green)}
+.two{display:grid;grid-template-columns:1.25fr 1fr;gap:14px}.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.device{display:flex;justify-content:space-between;gap:12px;align-items:center}.status{color:var(--green);font-size:11px}.device-meta{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}.device-meta small{display:block;color:var(--muted);margin-bottom:5px}.device-meta strong{font-size:12px;font-weight:600}
+.activity{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.activity:last-child{border:0}.activity b{font-size:12px;font-weight:600}.activity small{display:block;color:var(--muted);margin-top:4px}
+.map{height:190px;border-radius:10px;background:linear-gradient(135deg,#18283a,#17202c);position:relative;overflow:hidden;display:grid;place-items:center;color:#8da4bd}
+.map:before,.map:after{content:"";position:absolute;width:140%;height:1px;background:#30445a;transform:rotate(-24deg)}.map:after{transform:rotate(35deg)}
+.map span{z-index:1;background:#101923;border:1px solid #33465d;border-radius:20px;padding:7px 12px;font-size:11px}
+.table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);font-size:12px}.table th{color:var(--muted);font-weight:500}.pill{font-size:10px;color:#86d9b7;background:#123328;padding:4px 8px;border-radius:20px}
+.page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}
+.mobile-menu{display:none}
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
+@media(max-width:700px){.sidebar{width:72px;padding:18px 8px}.sidebar .brand{font-size:0;padding:4px 12px 25px}.sidebar .brand:after{content:"D";font-size:18px;color:var(--blue)}.nav{justify-content:center;padding:12px 6px}.nav .nav-text,.nav-label,.sidebar-bottom .nav-text{display:none}.main{margin-left:72px;padding:18px 14px}.topbar{align-items:flex-start}.search{width:100%}.top-actions .ghost{padding:9px}.grid,.three{grid-template-columns:1fr 1fr}.device-meta{grid-template-columns:1fr 1fr}}
+@media(max-width:430px){.grid,.three{grid-template-columns:1fr}.top-actions .sync-label{display:none}.login-card{padding:25px}.field{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="login-wrap" id="login">
+  <div class="login-card">
+    <div class="brand">DASH<span>V23</span> <span style="color:#75869a;font-weight:500">.11</span></div>
+    <h1>Login to dashboard</h1>
+    <p class="muted">Enter your access password to open the demo dashboard.</p>
+    <form id="loginForm">
+      <div class="field"><input id="password" type="password" placeholder="Enter password" autocomplete="current-password" required><button class="primary" type="submit">Login</button></div>
+      <div class="error" id="error" aria-live="polite"></div>
+    </form>
+    <div class="tiny">Demo interface · fictional sample data</div>
+  </div>
+</div>
+<div id="app">
+<aside class="sidebar">
+  <div class="brand">DASH<span>V23</span></div>
+  <div class="nav-label">WORKSPACE</div>
+  <a class="nav active" href="#overview" data-page="overview"><span class="ico">▦</span><span class="nav-text">Dashboard Overview</span></a>
+  <a class="nav" href="#insights" data-page="insights"><span class="ico">◒</span><span class="nav-text">Speed Insights</span></a>
+  <div class="nav-label">ACTIVITY</div>
+  <a class="nav" href="#messages" data-page="messages"><span class="ico">▤</span><span class="nav-text">Messages</span></a>
+  <a class="nav" href="#calls" data-page="calls"><span class="ico">◉</span><span class="nav-text">Calls</span></a>
+  <a class="nav" href="#locations" data-page="locations"><span class="ico">⌖</span><span class="nav-text">Location History</span></a>
+  <a class="nav" href="#hidden" data-page="hidden"><span class="ico">◌</span><span class="nav-text">Hidden Messages</span></a>
+  <div class="nav-label">APPS & DEVICE</div>
+  <a class="nav" href="#instagram" data-page="instagram"><span class="ico">◎</span><span class="nav-text">Instagram</span></a>
+  <a class="nav" href="#whatsapp" data-page="whatsapp"><span class="ico">◔</span><span class="nav-text">WhatsApp</span></a>
+  <a class="nav" href="#device" data-page="device"><span class="ico">▣</span><span class="nav-text">Device information</span></a>
+  <div class="sidebar-bottom"><a class="nav" href="#" id="logout"><span class="ico">↪</span><span class="nav-text">Log out</span></a></div>
+</aside>
+<main class="main">
+  <div class="topbar"><input class="search" id="search" placeholder="⌕  Search dashboard..."><div class="top-actions"><button class="ghost" id="sync">↻ <span class="sync-label">Sync</span></button><button class="ghost" id="topLogout">Log out</button></div></div>
+  <section class="page active" id="page-overview">
+    <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance · Demo environment</p>
+    <div class="section-head"><h2>Dashboard overview</h2><span class="tiny" id="updated">Last updated: just now</span></div>
+    <div class="grid">
+      <div class="card"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
+      <div class="card"><div class="metric-label">Messages logged</div><div class="metric">103</div><div class="metric-foot">↑ 12.4% this week</div></div>
+      <div class="card"><div class="metric-label">Location logs</div><div class="metric">—</div><div class="metric-foot">Sample data only</div></div>
+      <div class="card"><div class="metric-label">Firewall traffic</div><div class="metric">1.2k</div><div class="metric-foot">Within normal range</div></div>
+    </div>
+    <div class="two" style="margin-top:14px">
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Visibility overview</h2><span class="tiny">Last 7 days</span></div><div style="display:flex;align-items:end;gap:8px;height:125px;padding:8px 0 0">
+        <div style="height:42%;flex:1;background:#24436a;border-radius:5px 5px 0 0"></div><div style="height:61%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:48%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:80%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:67%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:92%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:72%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div>
+      </div><div class="tiny" style="display:flex;justify-content:space-between;margin-top:8px"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Device information</h2><span class="status">● Demo active</span></div><div class="device"><div><b>Sample iPhone</b><div class="tiny" style="margin-top:5px">Personal demo device</div></div><span style="font-size:26px">▣</span></div><div class="device-meta"><div><small>Device ID</small><strong>DEMO-5397</strong></div><div><small>Model</small><strong>iPhone</strong></div><div><small>Network</small><strong>Demo network</strong></div><div><small>Connection</small><strong>Not connected</strong></div></div></div>
+    </div>
+    <div class="two" style="margin-top:14px">
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Recent activity</h2><span class="tiny">Sample entries</span></div>
+        <div class="activity"><div><b>Message activity example</b><small>Demo contact · Message preview placeholder</small></div><span class="tiny">10:42 AM</span></div>
+        <div class="activity"><div><b>Call activity example</b><small>Demo contact · Outgoing call</small></div><span class="tiny">Yesterday</span></div>
+        <div class="activity"><div><b>App activity example</b><small>Sample app · No live account connected</small></div><span class="tiny">Nov 11</span></div>
+      </div>
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Location preview</h2><span class="tiny">Illustrative only</span></div><div class="map"><span>⌖  Sample map preview</span></div><div class="tiny" style="margin-top:10px">No GPS or live location is collected by this demo.</div></div>
+    </div>
+  </section>
+  <section class="page" id="page-insights"><h1>Speed Insights</h1><p class="sub">Dashboard performance overview</p><div class="grid"><div class="card"><div class="metric-label">Page response</div><div class="metric">124 ms</div><div class="metric-foot">Demo metric</div></div><div class="card"><div class="metric-label">Uptime</div><div class="metric">99.9%</div><div class="metric-foot">Illustrative</div></div></div></section>
+  <section class="page" id="page-messages"><h1>Messages</h1><p class="sub">Example message records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>PREVIEW</th><th>TIME</th><th>TYPE</th></tr><tr><td>Alex (demo)</td><td>Sample message preview</td><td>10:42 AM</td><td><span class="pill">Received</span></td></tr><tr><td>Jordan (demo)</td><td>Another fictional entry</td><td>Yesterday</td><td><span class="pill">Sent</span></td></tr></table></div></section>
+  <section class="page" id="page-calls"><h1>Calls</h1><p class="sub">Example call records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>DIRECTION</th><th>DURATION</th><th>DATE</th></tr><tr><td>Alex (demo)</td><td>Outgoing</td><td>04:32</td><td>Today</td></tr><tr><td>Jordan (demo)</td><td>Incoming</td><td>02:18</td><td>Yesterday</td></tr></table></div></section>
+  <section class="page" id="page-locations"><h1>Location History</h1><p class="sub">Illustrative location interface — no real tracking</p><div class="card"><div class="map" style="height:260px"><span>⌖  Location map placeholder</span></div><p class="empty-note">Connect an authorized location source to display data. This replica does not access GPS or track devices.</p></div></section>
+  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><p class="sub">Demo section</p><div class="card empty-note">No real messages are accessed. Add fictional sample entries here for design testing.</div></section>
+  <section class="page" id="page-instagram"><h1>Instagram</h1><p class="sub">App section preview</p><div class="card empty-note">No Instagram account is connected. This is a visual demo only.</div></section>
+  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><p class="sub">App section preview</p><div class="card empty-note">No WhatsApp account is connected. This is a visual demo only.</div></section>
+  <section class="page" id="page-device"><h1>Device information</h1><p class="sub">Fictional demo device profile</p><div class="card device-meta"><div><small>Device ID</small><strong>DEMO-5397</strong></div><div><small>Model</small><strong>iPhone</strong></div><div><small>Device status</small><strong>Demo only</strong></div><div><small>Network</small><strong>Not connected</strong></div></div></section>
+  <p class="tiny" style="margin-top:28px">DASHV23 · Demo replica · All displayed records are fictional.</p>
+</main>
+</div>
+<script>
+const DEMO_PASSWORD = "098765";
+const login = document.getElementById('login'), app = document.getElementById('app');
+document.getElementById('loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (document.getElementById('password').value === DEMO_PASSWORD) {
+    login.style.display='none'; app.style.display='block'; document.getElementById('error').textContent='';
+  } else { document.getElementById('error').textContent='Incorrect password. Please try again.'; }
+});
+function logout(){app.style.display='none';login.style.display='grid';document.getElementById('password').value='';}
+document.getElementById('logout').addEventListener('click',e=>{e.preventDefault();logout()});
+document.getElementById('topLogout').addEventListener('click',logout);
+document.querySelectorAll('[data-page]').forEach(link=>link.addEventListener('click',e=>{
+  e.preventDefault(); document.querySelectorAll('[data-page]').forEach(a=>a.classList.remove('active'));
+  link.classList.add('active'); document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=document.getElementById('page-'+link.dataset.page); if(page)page.classList.add('active');
+}));
+document.getElementById('sync').addEventListener('click',()=>{document.getElementById('updated').textContent='Last updated: just now';});
+document.getElementById('search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('[data-page]').forEach(a=>{a.style.display=a.textContent.toLowerCase().includes(q)||!q?'flex':'none';});
+});
+</script>
+</body></html>
