@@ -36,6 +36,16 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);font-size:12px}.table th{color:var(--muted);font-weight:500}.pill{font-size:10px;color:#86d9b7;background:#123328;padding:4px 8px;border-radius:20px}
 .page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}
 .mobile-menu{display:none}
+
+.modal-backdrop{position:fixed;inset:0;background:#05080dcc;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal-backdrop.show{display:flex}
+.modal-card{width:min(560px,100%);background:#111923;border:1px solid #2a3543;border-radius:12px;padding:25px;box-shadow:0 25px 90px #000b}
+.modal-accent{height:5px;width:100px;background:#e05a66;border-radius:8px;margin-bottom:24px}
+.modal-card h2{font-size:19px;margin:0 0 10px}
+.modal-card p{color:#b5c0ce;line-height:1.55;margin:0 0 20px}
+.modal-proceed{width:100%;background:#dcecf7;color:#26394b;border:0;border-radius:7px;padding:13px;font-weight:650}
+.modal-note{margin-top:18px;padding:14px;background:#281d2b;border:1px solid #50303e;border-radius:8px;color:#e7a0ae;font-size:12px;line-height:1.45}
+
 @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:1fr}}
 @media(max-width:700px){.sidebar{width:72px;padding:18px 8px}.sidebar .brand{font-size:0;padding:4px 12px 25px}.sidebar .brand:after{content:"D";font-size:18px;color:var(--blue)}.nav{justify-content:center;padding:12px 6px}.nav .nav-text,.nav-label,.sidebar-bottom .nav-text{display:none}.main{margin-left:72px;padding:18px 14px}.topbar{align-items:flex-start}.search{width:100%}.top-actions .ghost{padding:9px}.grid,.three{grid-template-columns:1fr 1fr}.device-meta{grid-template-columns:1fr 1fr}}
 @media(max-width:430px){.grid,.three{grid-template-columns:1fr}.top-actions .sync-label{display:none}.login-card{padding:25px}.field{flex-direction:column}}
@@ -107,6 +117,15 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
   <section class="page" id="page-device"><h1>Device information</h1><p class="sub">Fictional demo device profile</p><div class="card device-meta"><div><small>Device ID</small><strong>DEMO-5397</strong></div><div><small>Model</small><strong>iPhone</strong></div><div><small>Device status</small><strong>Demo only</strong></div><div><small>Network</small><strong>Not connected</strong></div></div></section>
   <p class="tiny" style="margin-top:28px">DASHV23 · Demo replica · All displayed records are fictional.</p>
 </main>
+<div class="modal-backdrop" id="storageModal" role="dialog" aria-modal="true" aria-labelledby="storageTitle">
+  <div class="modal-card">
+    <div class="modal-accent"></div>
+    <h2 id="storageTitle">Cloud Storage Required</h2>
+    <p id="storageMessage">Data sync could not be completed due to insufficient cloud storage. As a result, only 90% of the data is currently available for this section. An additional 5 GB of free space is required to finish the sync.</p>
+    <button class="modal-proceed" id="modalProceed" type="button">Proceed</button>
+    <div class="modal-note">Illustrative message only: this replica does not check storage capacity or sync real data.</div>
+  </div>
+</div>
 </div>
 <script>
 const DEMO_PASSWORD = "098765";
@@ -120,11 +139,33 @@ document.getElementById('loginForm').addEventListener('submit', e => {
 function logout(){app.style.display='none';login.style.display='grid';document.getElementById('password').value='';}
 document.getElementById('logout').addEventListener('click',e=>{e.preventDefault();logout()});
 document.getElementById('topLogout').addEventListener('click',logout);
+let pendingPage = 'overview';
+const storageModal = document.getElementById('storageModal');
+function showStorageNotice(pageName){
+  pendingPage = pageName;
+  document.getElementById('storageMessage').textContent =
+    'Data sync could not be completed due to insufficient cloud storage. As a result, only 90% of the data is currently available for this section. An additional 5 GB of free space is required to finish the sync.';
+  storageModal.classList.add('show');
+}
+function openPage(pageName){
+  document.querySelectorAll('[data-page]').forEach(a=>{
+    a.classList.toggle('active', a.dataset.page === pageName);
+  });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=document.getElementById('page-'+pageName);
+  if(page) page.classList.add('active');
+}
 document.querySelectorAll('[data-page]').forEach(link=>link.addEventListener('click',e=>{
-  e.preventDefault(); document.querySelectorAll('[data-page]').forEach(a=>a.classList.remove('active'));
-  link.classList.add('active'); document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const page=document.getElementById('page-'+link.dataset.page); if(page)page.classList.add('active');
+  e.preventDefault();
+  showStorageNotice(link.dataset.page);
 }));
+document.getElementById('modalProceed').addEventListener('click',()=>{
+  storageModal.classList.remove('show');
+  openPage(pendingPage);
+});
+storageModal.addEventListener('click',e=>{
+  if(e.target===storageModal) storageModal.classList.remove('show');
+});
 document.getElementById('sync').addEventListener('click',()=>{document.getElementById('updated').textContent='Last updated: just now';});
 document.getElementById('search').addEventListener('input',e=>{
   const q=e.target.value.toLowerCase();
