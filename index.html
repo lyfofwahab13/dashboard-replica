@@ -37,6 +37,15 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}
 .mobile-menu{display:none}
 
+
+.plan-card{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid #2a3543;border-radius:9px;margin:10px 0;cursor:pointer;background:#0e151e}
+.plan-card.selected{border-color:#e05a4f;background:#171d27}
+.plan-card input{accent-color:#e05a4f;width:18px;height:18px}
+.plan-copy{flex:1;min-width:0}.plan-name{font-weight:700;font-size:15px}.plan-capacity{color:#aab6c5;margin-top:6px;font-size:13px}
+.plan-price{font-weight:750;font-size:16px;white-space:nowrap}
+.plan-recommended{font-size:10px;color:#e9a29a;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px}
+.plan-disclosure{font-size:11px;color:#b8a8a8;line-height:1.45;margin:14px 0 0}
+
 .modal-backdrop{position:fixed;inset:0;background:#05080dcc;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal-backdrop.show{display:flex}
 .modal-card{width:min(560px,100%);background:#111923;border:1px solid #2a3543;border-radius:12px;padding:25px;box-shadow:0 25px 90px #000b}
@@ -84,46 +93,79 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 <main class="main">
   <div class="topbar"><input class="search" id="search" placeholder="⌕  Search dashboard..."><div class="top-actions"><button class="ghost" id="sync">↻ <span class="sync-label">Sync</span></button><button class="ghost" id="topLogout">Log out</button></div></div>
   <section class="page active" id="page-overview">
-    <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance · Demo environment</p>
+    <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance</p>
     <div class="section-head"><h2>Dashboard overview</h2><span class="tiny" id="updated">Last updated: just now</span></div>
     <div class="grid">
       <div class="card"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
-      <div class="card"><div class="metric-label">Messages logged</div><div class="metric">103</div><div class="metric-foot">↑ 12.4% this week</div></div>
+      <div class="card"><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
       <div class="card"><div class="metric-label">Location logs</div><div class="metric">—</div><div class="metric-foot">Sample data only</div></div>
       <div class="card"><div class="metric-label">Firewall traffic</div><div class="metric">1.2k</div><div class="metric-foot">Within normal range</div></div>
     </div>
     <div class="two" style="margin-top:14px">
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Visibility overview</h2><span class="tiny">Last 7 days</span></div><div style="display:flex;align-items:end;gap:8px;height:125px;padding:8px 0 0">
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Visibility overview</h2><span class="tiny">Recent activity</span></div><div style="display:flex;align-items:end;gap:8px;height:125px;padding:8px 0 0">
         <div style="height:42%;flex:1;background:#24436a;border-radius:5px 5px 0 0"></div><div style="height:61%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:48%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:80%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:67%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:92%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:72%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div>
       </div><div class="tiny" style="display:flex;justify-content:space-between;margin-top:8px"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Device information</h2><span class="status">● Demo active</span></div><div class="device"><div><b>Sample iPhone</b><div class="tiny" style="margin-top:5px">Personal demo device</div></div><span style="font-size:26px">▣</span></div><div class="device-meta"><div><small>Device ID</small><strong>DEMO-5397</strong></div><div><small>Model</small><strong>iPhone</strong></div><div><small>Network</small><strong>Demo network</strong></div><div><small>Connection</small><strong>Not connected</strong></div></div></div>
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Device information</h2><span class="status">● Demo active</span></div><div class="device"><div><b>Device not connected</b><div class="tiny" style="margin-top:5px">Connect an authorized device source to display details.</div></div><span style="font-size:26px">▣</span></div><div class="device-meta"><div><small>Device ID</small><strong>Not available</strong></div><div><small>Model</small><strong>Not available</strong></div><div><small>Network</small><strong>Not connected</strong></div><div><small>Connection</small><strong>Not connected</strong></div></div></div>
     </div>
     <div class="two" style="margin-top:14px">
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Recent activity</h2><span class="tiny">Sample entries</span></div>
-        <div class="activity"><div><b>Message activity example</b><small>Demo contact · Message preview placeholder</small></div><span class="tiny">10:42 AM</span></div>
-        <div class="activity"><div><b>Call activity example</b><small>Demo contact · Outgoing call</small></div><span class="tiny">Yesterday</span></div>
-        <div class="activity"><div><b>App activity example</b><small>Sample app · No live account connected</small></div><span class="tiny">Nov 11</span></div>
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Recent activity</h2><span class="tiny">Recent entries</span></div>
+        <div class="empty-note">No activity records have been connected.</div><span class="tiny">Nov 11</span></div>
       </div>
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Location preview</h2><span class="tiny">Illustrative only</span></div><div class="map"><span>⌖  Sample map preview</span></div><div class="tiny" style="margin-top:10px">No GPS or live location is collected by this demo.</div></div>
+      <div class="card"><div class="section-head" style="margin-top:0"><h2>Location preview</h2><span class="tiny">Illustrative only</span></div><div class="map"><span>⌖  Map unavailable</span></div><div class="tiny" style="margin-top:10px">No location source is connected.</div></div>
     </div>
   </section>
   <section class="page" id="page-insights"><h1>Speed Insights</h1><p class="sub">Dashboard performance overview</p><div class="grid"><div class="card"><div class="metric-label">Page response</div><div class="metric">124 ms</div><div class="metric-foot">Demo metric</div></div><div class="card"><div class="metric-label">Uptime</div><div class="metric">99.9%</div><div class="metric-foot">Illustrative</div></div></div></section>
   <section class="page" id="page-messages"><h1>Messages</h1><p class="sub">Example message records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>PREVIEW</th><th>TIME</th><th>TYPE</th></tr><tr><td>Alex (demo)</td><td>Sample message preview</td><td>10:42 AM</td><td><span class="pill">Received</span></td></tr><tr><td>Jordan (demo)</td><td>Another fictional entry</td><td>Yesterday</td><td><span class="pill">Sent</span></td></tr></table></div></section>
   <section class="page" id="page-calls"><h1>Calls</h1><p class="sub">Example call records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>DIRECTION</th><th>DURATION</th><th>DATE</th></tr><tr><td>Alex (demo)</td><td>Outgoing</td><td>04:32</td><td>Today</td></tr><tr><td>Jordan (demo)</td><td>Incoming</td><td>02:18</td><td>Yesterday</td></tr></table></div></section>
-  <section class="page" id="page-locations"><h1>Location History</h1><p class="sub">Illustrative location interface — no real tracking</p><div class="card"><div class="map" style="height:260px"><span>⌖  Location map placeholder</span></div><p class="empty-note">Connect an authorized location source to display data. This replica does not access GPS or track devices.</p></div></section>
-  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><p class="sub">Demo section</p><div class="card empty-note">No real messages are accessed. Add fictional sample entries here for design testing.</div></section>
-  <section class="page" id="page-instagram"><h1>Instagram</h1><p class="sub">App section preview</p><div class="card empty-note">No Instagram account is connected. This is a visual demo only.</div></section>
-  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><p class="sub">App section preview</p><div class="card empty-note">No WhatsApp account is connected. This is a visual demo only.</div></section>
-  <section class="page" id="page-device"><h1>Device information</h1><p class="sub">Fictional demo device profile</p><div class="card device-meta"><div><small>Device ID</small><strong>DEMO-5397</strong></div><div><small>Model</small><strong>iPhone</strong></div><div><small>Device status</small><strong>Demo only</strong></div><div><small>Network</small><strong>Not connected</strong></div></div></section>
-  <p class="tiny" style="margin-top:28px">DASHV23 · Demo replica · All displayed records are fictional.</p>
+  <section class="page" id="page-locations"><h1>Location History</h1><p class="sub">Location history</p><div class="card"><div class="map" style="height:260px"><span>⌖  Location map placeholder</span></div><p class="empty-note">Connect an authorized location source to display data. This replica does not access GPS or track devices.</p></div></section>
+  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><p class="sub">Demo section</p><div class="card empty-note">No message source is connected.</div></section>
+  <section class="page" id="page-instagram"><h1>Instagram</h1><p class="sub">App section preview</p><div class="card empty-note">No Instagram account is connected.</div></section>
+  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><p class="sub">App section preview</p><div class="card empty-note">No WhatsApp account is connected.</div></section>
+  <section class="page" id="page-device"><h1>Device information</h1><p class="sub">Device profile</p><div class="card device-meta"><div><small>Device ID</small><strong>Not available</strong></div><div><small>Model</small><strong>Not available</strong></div><div><small>Device status</small><strong>Not connected</strong></div><div><small>Network</small><strong>Not connected</strong></div></div></section>
+  <p class="tiny" style="margin-top:28px">DASHV23 · Metrics are manually entered; no private device data is collected.</p>
+  <p class="tiny" style="margin-top:8px">Storage plan details are a preview; this site does not process payments or activate cloud storage.</p>
 </main>
+
+<div class="modal-backdrop" id="plansModal" role="dialog" aria-modal="true" aria-labelledby="plansTitle">
+  <div class="modal-card">
+    <div class="modal-accent"></div>
+    <h2 id="plansTitle">Storage plans and pricing</h2>
+    <p>Please select a storage option to continue.</p>
+    <label class="plan-card selected">
+      <input type="radio" name="storagePlan" value="Basic Storage" checked>
+      <span class="plan-copy"><span class="plan-recommended">Recommended</span><span class="plan-name">Basic Storage</span><span class="plan-capacity">10 GB Storage</span></span>
+      <span class="plan-price">$200</span>
+    </label>
+    <label class="plan-card">
+      <input type="radio" name="storagePlan" value="Elite Storage">
+      <span class="plan-copy"><span class="plan-name">Elite Storage</span><span class="plan-capacity">25 GB Storage</span></span>
+      <span class="plan-price">$500</span>
+    </label>
+    <label class="plan-card">
+      <input type="radio" name="storagePlan" value="Diamond Storage">
+      <span class="plan-copy"><span class="plan-name">Diamond Storage</span><span class="plan-capacity">50 GB Storage</span></span>
+      <span class="plan-price">$700</span>
+    </label>
+    <button class="modal-proceed" id="planProceed" type="button">Proceed</button>
+    <p class="plan-disclosure">Preview only: these are sample plan details. No payment will be taken and no storage will be activated.</p>
+  </div>
+</div>
+<div class="modal-backdrop" id="planConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal-card">
+    <div class="modal-accent"></div>
+    <h2 id="confirmTitle">Plan selected</h2>
+    <p id="confirmText">Your selected storage plan is shown for preview.</p>
+    <button class="modal-proceed" id="confirmClose" type="button">Close</button>
+  </div>
+</div>
+
 <div class="modal-backdrop" id="storageModal" role="dialog" aria-modal="true" aria-labelledby="storageTitle">
   <div class="modal-card">
     <div class="modal-accent"></div>
     <h2 id="storageTitle">Cloud Storage Required</h2>
     <p id="storageMessage">Data sync could not be completed due to insufficient cloud storage. As a result, only 90% of the data is currently available for this section. An additional 5 GB of free space is required to finish the sync.</p>
     <button class="modal-proceed" id="modalProceed" type="button">Proceed</button>
-    <div class="modal-note">Illustrative message only: this replica does not check storage capacity or sync real data.</div>
+    <div class="modal-note">This notice is a display message only; storage capacity and sync status are not verified.</div>
   </div>
 </div>
 </div>
@@ -161,8 +203,27 @@ document.querySelectorAll('[data-page]').forEach(link=>link.addEventListener('cl
 }));
 document.getElementById('modalProceed').addEventListener('click',()=>{
   storageModal.classList.remove('show');
+  document.getElementById('plansModal').classList.add('show');
+});
+document.querySelectorAll('input[name="storagePlan"]').forEach(input=>{
+  input.addEventListener('change',()=>{
+    document.querySelectorAll('.plan-card').forEach(card=>card.classList.remove('selected'));
+    input.closest('.plan-card').classList.add('selected');
+  });
+});
+document.getElementById('planProceed').addEventListener('click',()=>{
+  const selected = document.querySelector('input[name="storagePlan"]:checked');
+  const prices = {'Basic Storage':'$200 for 10 GB','Elite Storage':'$500 for 25 GB','Diamond Storage':'$700 for 50 GB'};
+  document.getElementById('confirmText').textContent =
+    selected ? selected.value + ' — ' + prices[selected.value] + '. This is a preview selection only; no purchase was made.' : 'Please select a plan.';
+  document.getElementById('plansModal').classList.remove('show');
+  document.getElementById('planConfirmModal').classList.add('show');
+});
+document.getElementById('confirmClose').addEventListener('click',()=>{
+  document.getElementById('planConfirmModal').classList.remove('show');
   openPage(pendingPage);
 });
+
 storageModal.addEventListener('click',e=>{
   if(e.target===storageModal) storageModal.classList.remove('show');
 });
