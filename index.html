@@ -173,73 +173,93 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
   </div>
 </div>
 </div>
+
 <script>
 const DEMO_PASSWORD = "098765";
-const login = document.getElementById('login'), app = document.getElementById('app');
-document.getElementById('loginForm').addEventListener('submit', e => {
-  e.preventDefault();
-  if (document.getElementById('password').value === DEMO_PASSWORD) {
-    login.style.display='none'; app.style.display='block'; document.getElementById('error').textContent='';
-  } else { document.getElementById('error').textContent='Incorrect password. Please try again.'; }
-});
-function logout(){app.style.display='none';login.style.display='grid';document.getElementById('password').value='';}
-document.getElementById('logout').addEventListener('click',e=>{e.preventDefault();logout()});
-document.getElementById('topLogout').addEventListener('click',logout);
-let pendingPage = 'overview';
-const storageModal = document.getElementById('storageModal');
-function showStorageNotice(pageName){
-  pendingPage = pageName;
-  document.getElementById('storageMessage').textContent =
-    'Data sync could not be completed due to insufficient cloud storage. As a result, only 90% of the data is currently available for this section. An additional 5 GB of free space is required to finish the sync.';
-  storageModal.classList.add('show');
-}
-function openPage(pageName){
-  document.querySelectorAll('[data-page]').forEach(a=>{
-    a.classList.toggle('active', a.dataset.page === pageName);
-  });
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const page=document.getElementById('page-'+pageName);
-  if(page) page.classList.add('active');
-}
-document.querySelectorAll('[data-open-storage]').forEach(card=>{
-  const openNotice=()=>showStorageNotice('overview');
-  card.addEventListener('click',openNotice);
-  card.addEventListener('keydown',e=>{
-    if(e.key==='Enter'||e.key===' '){e.preventDefault();openNotice();}
-  });
-});
-document.querySelectorAll('[data-page]').forEach(link=>link.addEventListener('click',e=>{
-  e.preventDefault();
-  showStorageNotice(link.dataset.page);
-}));
-document.getElementById('modalProceed').addEventListener('click',()=>{
-  storageModal.classList.remove('show');
-  document.getElementById('plansModal').classList.add('show');
-});
-document.querySelectorAll('input[name="storagePlan"]').forEach(input=>{
-  input.addEventListener('change',()=>{
-    document.querySelectorAll('.plan-card').forEach(card=>card.classList.remove('selected'));
-    input.closest('.plan-card').classList.add('selected');
-  });
-});
-document.getElementById('planProceed').addEventListener('click',()=>{
-  document.getElementById('plansModal').classList.remove('show');
-  const loadingModal = document.getElementById('planConfirmModal');
-  loadingModal.classList.add('show');
-  window.setTimeout(()=>{
-    loadingModal.classList.remove('show');
-    storageModal.classList.remove('show');
-    openPage('overview');
-  }, 2600);
-});
+const login = document.getElementById('login');
+const app = document.getElementById('app');
+let clickTimer = null;
+let loadingNotice = null;
 
-storageModal.addEventListener('click',e=>{
-  if(e.target===storageModal) storageModal.classList.remove('show');
-});
-document.getElementById('sync').addEventListener('click',()=>{document.getElementById('updated').textContent='Last updated: just now';});
-document.getElementById('search').addEventListener('input',e=>{
-  const q=e.target.value.toLowerCase();
-  document.querySelectorAll('[data-page]').forEach(a=>{a.style.display=a.textContent.toLowerCase().includes(q)||!q?'flex':'none';});
-});
+const sectionMessage = 'Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section.';
+
+function showPage(pageName) {
+  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+  const page = document.getElementById('page-' + pageName);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.nav[data-page]').forEach(link => {
+    link.classList.toggle('active', link.dataset.page === pageName);
+  });
+}
+
+function renderSectionContent(page) {
+  if (!page) return;
+  const title = page.querySelector('h1')?.textContent || 'Dashboard section';
+  page.innerHTML = `
+    <h1>${title}</h1>
+    <p class="sub">Section content</p>
+    <div class="card" style="border-left:3px solid #d6a34b">
+      <div class="section-head" style="margin-top:0">
+        <h2>Call log / section records</h2>
+        <span class="tiny">Sync status · Demo</span>
+      </div>
+      <div class="activity" style="border-bottom:0;padding-bottom:4px">
+        <div><b>Data unavailable</b><small>${sectionMessage}</small></div>
+        <span class="pill" style="align-self:flex-start;color:#f1c27b;background:#3a2b18">Unavailable</span>
+      </div>
+      <p class="tiny" style="margin:12px 0 0">Simulated dashboard content. No real data has been accessed, changed, or deleted.</p>
+    </div>`;
+}
+
+function showInlineLoading(page) {
+  if (!page) return;
+  const old = page.querySelector('.demo-loading');
+  if (old) old.remove();
+  const loading = document.createElement('div');
+  loading.className = 'card demo-loading';
+  loading.style.cssText = 'margin-top:14px;display:flex;align-items:center;gap:12px;color:var(--muted)';
+  loading.innerHTML = '<span class="loading-spinner" style="width:20px;height:20px;border-width:3px;margin:0;flex:0 0 auto"></span><span>Loading section content...</span>';
+  page.appendChild(loading);
+}
+
+function triggerSectionContent(page) {
+  if (!page) return;
+  if (clickTimer) window.clearTimeout(clickTimer);
+  showInlineLoading(page);
+  clickTimer = window.setTimeout(() => {
+    renderSectionContent(page);
+    clickTimer = null;
+  }, 2300);
+}
+
+function logout() {
+  if (clickTimer) window.clearTimeout(clickTimer);
+  clickTimer = null;
+  app.style.display = 'none';
+  login.style.display = 'grid';
+  document.getElementById('password').value = '';
+}
+document.getElementById('logout').addEventListener('click', e => { e.preventDefault(); logout(); });
+document.getElementById('topLogout').addEventListener('click', logout);
+
+// Navigation opens the selected section. After 2.3 seconds its message is
+// rendered inside the page itself, styled like ordinary call-log content.
+app.addEventListener('click', e => {
+  const logoutControl = e.target.closest('#logout, #topLogout');
+  if (logoutControl) return;
+  const navLink = e.target.closest('a.nav[data-page]');
+  if (navLink) {
+    e.preventDefault();
+    const pageName = navLink.dataset.page;
+    showPage(pageName);
+    triggerSectionContent(document.getElementById('page-' + pageName));
+    return;
+  }
+  const interactive = e.target.closest('a, button, input, label, [role="button"], .metric-click, .plan-card');
+  if (!interactive) return;
+  e.preventDefault();
+  const activePage = document.querySelector('.page.active');
+  triggerSectionContent(activePage);
+}, true);
 </script>
 </body></html>
