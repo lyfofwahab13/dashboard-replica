@@ -183,6 +183,24 @@ let loadingNotice = null;
 
 const sectionMessage = 'Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section.';
 
+// Demo login: validate the access password and reveal the dashboard.
+document.getElementById('loginForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const passwordInput = document.getElementById('password');
+  const error = document.getElementById('error');
+  if (passwordInput.value === DEMO_PASSWORD) {
+    error.textContent = '';
+    login.style.display = 'none';
+    app.style.display = 'block';
+    showPage('overview');
+    passwordInput.value = '';
+  } else {
+    error.textContent = 'Incorrect access password. Please try again.';
+    passwordInput.focus();
+    passwordInput.select();
+  }
+});
+
 function showPage(pageName) {
   document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
   const page = document.getElementById('page-' + pageName);
