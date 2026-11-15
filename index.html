@@ -35,7 +35,7 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .map:before,.map:after{content:"";position:absolute;width:140%;height:1px;background:#30445a;transform:rotate(-24deg)}.map:after{transform:rotate(35deg)}
 .map span{z-index:1;background:#101923;border:1px solid #33465d;border-radius:20px;padding:7px 12px;font-size:11px}
 .table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);font-size:12px}.table th{color:var(--muted);font-weight:500}.pill{font-size:10px;color:#86d9b7;background:#123328;padding:4px 8px;border-radius:20px}
-.page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}.sync-error{margin-top:18px;padding:22px;color:#ff9a9a;border-color:#633b43;background:#21171b;line-height:1.6;font-size:14px}.overview-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));margin:18px 0}.overview-shortcuts .metric-click{min-height:82px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.page{display:none}.page.active{display:block}.section-sync-error{margin-top:18px;padding:22px;border:1px solid #70404a;border-radius:12px;background:#21181d;color:#ff8585;line-height:1.55;font-size:13px}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}.overview-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));margin:18px 0}.overview-shortcuts .metric-click{min-height:82px;display:flex;flex-direction:column;justify-content:center;gap:10px}
 .mobile-menu{display:none}
 
 
@@ -95,21 +95,18 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 <section class="page active" id="page-overview">
     <h1>Dashboard overview</h1>
     <div class="grid overview-shortcuts">
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Open calls log" data-page="calls"><div class="metric-label">Calls logged</div><div class="metric-foot">Open section</div></div>
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Open messages log" data-page="messages"><div class="metric-label">Messages logged</div><div class="metric-foot">Open section</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Calls logged: 20" data-page="calls"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Messages logged: 120" data-page="messages"><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
     </div>
-    <div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div>
   </section>
-  <section class="page" id="page-insights"><h1>Speed Insights</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-messages"><h1>Messages</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-calls"><h1>Calls</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-locations"><h1>Location History</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-instagram"><h1>Instagram</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <section class="page" id="page-device"><h1>Device information</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
-  <p class="tiny" style="margin-top:28px">DASHV23 · Metrics are manually entered; no private device data is collected.</p>
-  <p class="tiny" style="margin-top:8px">Storage plan details are a preview; this site does not process payments or activate cloud storage.</p>
+  <section class="page" id="page-insights"><h1>Speed Insights</h1></section>
+  <section class="page" id="page-messages"><h1>Messages</h1></section>
+  <section class="page" id="page-calls"><h1>Calls</h1><p class="sub">Example call records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>DIRECTION</th><th>DURATION</th><th>DATE</th></tr><tr><td>Alex (demo)</td><td>Outgoing</td><td>04:32</td><td>Today</td></tr><tr><td>Jordan (demo)</td><td>Incoming</td><td>02:18</td><td>Yesterday</td></tr></table></div></section>
+  <section class="page" id="page-locations"><h1>Location History</h1></section>
+  <section class="page" id="page-hidden"><h1>Hidden Messages</h1></section>
+  <section class="page" id="page-instagram"><h1>Instagram</h1></section>
+  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1></section>
+  <section class="page" id="page-device"><h1>Device information</h1></section>
 </main>
 
 <div class="modal-backdrop" id="plansModal" role="dialog" aria-modal="true" aria-labelledby="plansTitle">
@@ -190,6 +187,19 @@ function showPage(pageName) {
   document.querySelectorAll('.nav[data-page]').forEach(link => {
     link.classList.toggle('active', link.dataset.page === pageName);
   });
+
+  // Show the requested sync-error message only after the user opens a section.
+  // Keep each section's existing layout (including the Calls table) intact.
+  const noticeId = 'section-sync-error-' + pageName;
+  let notice = document.getElementById(noticeId);
+  if (!notice) {
+    notice = document.createElement('div');
+    notice.id = noticeId;
+    notice.className = 'section-sync-error';
+    notice.setAttribute('role', 'status');
+    notice.textContent = 'Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section';
+    targetPage.appendChild(notice);
+  }
   if (location.hash !== '#' + pageName) history.replaceState(null, '', '#' + pageName);
 }
 
