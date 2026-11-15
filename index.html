@@ -50,10 +50,6 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .modal-backdrop{position:fixed;inset:0;background:#05080dcc;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
 .modal-backdrop.show{display:flex}
 .modal-card{width:min(560px,100%);background:#111923;border:1px solid #2a3543;border-radius:12px;padding:25px;box-shadow:0 25px 90px #000b}
-.loading-spinner{width:42px;height:42px;border:4px solid #344252;border-top-color:#dcecf7;border-radius:50%;margin:2px auto 22px;animation:loadingSpin .85s linear infinite}
-@keyframes loadingSpin{to{transform:rotate(360deg)}}
-#planConfirmModal .modal-card{text-align:center}
-#planConfirmModal .modal-accent{margin-left:auto;margin-right:auto}
 .modal-accent{height:5px;width:100px;background:#e05a66;border-radius:8px;margin-bottom:24px}
 .modal-card h2{font-size:19px;margin:0 0 10px}
 .modal-card p{color:#b5c0ce;line-height:1.55;margin:0 0 20px}
@@ -95,13 +91,13 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
   <div class="sidebar-bottom"><a class="nav" href="#" id="logout"><span class="ico">↪</span><span class="nav-text">Log out</span></a></div>
 </aside>
 <main class="main">
-  <div class="topbar"><input class="search" id="search" placeholder="⌕  Search dashboard..."><div class="top-actions"><button class="ghost" id="sync">↻ <span class="sync-label">Sync</span></button><button class="ghost" id="topLogout">Log out</button></div></div>
+  <div class="topbar"><input class="search" id="search" placeholder="⌕  Search dashboard..."><div class="top-actions"><span class="status" id="syncStatus">● Sync status: 100%</span><button class="ghost" id="sync">↻ <span class="sync-label">Sync</span></button><button class="ghost" id="topLogout">Log out</button></div></div>
   <section class="page active" id="page-overview">
     <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance</p>
     <div class="section-head"><h2>Dashboard overview</h2><span class="tiny" id="updated">Last updated: just now</span></div>
     <div class="grid">
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Calls logged: 20. Open storage notice" data-open-storage><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Messages logged: 120. Open storage notice" data-open-storage><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Open calls log" data-page="calls"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Open messages log" data-page="messages"><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
       <div class="card"><div class="metric-label">Location logs</div><div class="metric">—</div><div class="metric-foot">Sample data only</div></div>
       <div class="card"><div class="metric-label">Firewall traffic</div><div class="metric">1.2k</div><div class="metric-foot">Within normal range</div></div>
     </div>
@@ -154,15 +150,6 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
     <p class="plan-disclosure">This notice is a display message only; storage capacity and sync status are not verified.</p>
   </div>
 </div>
-<div class="modal-backdrop" id="planConfirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-  <div class="modal-card">
-    <div class="modal-accent"></div>
-    <div class="loading-spinner" aria-hidden="true"></div>
-    <h2 id="confirmTitle">Processing request...</h2>
-    <p id="confirmText">Please wait while we complete this step.</p>
-  </div>
-</div>
-
 <div class="modal-backdrop" id="storageModal" role="dialog" aria-modal="true" aria-labelledby="storageTitle">
   <div class="modal-card">
     <div class="modal-accent"></div>
@@ -178,12 +165,8 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 const DEMO_PASSWORD = "098765";
 const login = document.getElementById('login');
 const app = document.getElementById('app');
-let clickTimer = null;
-let loadingNotice = null;
 
-const sectionMessage = 'Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section.';
-
-// Demo login: validate the access password and reveal the dashboard.
+// Validate the dashboard password and show the dashboard on success.
 document.getElementById('loginForm').addEventListener('submit', event => {
   event.preventDefault();
   const passwordInput = document.getElementById('password');
@@ -200,7 +183,7 @@ document.getElementById('loginForm').addEventListener('submit', event => {
     passwordInput.select();
   }
 });
-
+// Navigation is immediate; no buffering or delayed loading state is shown.
 function showPage(pageName) {
   document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
   const page = document.getElementById('page-' + pageName);
@@ -210,49 +193,7 @@ function showPage(pageName) {
   });
 }
 
-function renderSectionContent(page) {
-  if (!page) return;
-  const title = page.querySelector('h1')?.textContent || 'Dashboard section';
-  page.innerHTML = `
-    <h1>${title}</h1>
-    <p class="sub">Section content</p>
-    <div class="card" style="border-left:3px solid #d6a34b">
-      <div class="section-head" style="margin-top:0">
-        <h2>Call log / section records</h2>
-        <span class="tiny">Sync status · Demo</span>
-      </div>
-      <div class="activity" style="border-bottom:0;padding-bottom:4px">
-        <div><b>Data unavailable</b><small>${sectionMessage}</small></div>
-        <span class="pill" style="align-self:flex-start;color:#f1c27b;background:#3a2b18">Unavailable</span>
-      </div>
-      <p class="tiny" style="margin:12px 0 0">Simulated dashboard content. No real data has been accessed, changed, or deleted.</p>
-    </div>`;
-}
-
-function showInlineLoading(page) {
-  if (!page) return;
-  const old = page.querySelector('.demo-loading');
-  if (old) old.remove();
-  const loading = document.createElement('div');
-  loading.className = 'card demo-loading';
-  loading.style.cssText = 'margin-top:14px;display:flex;align-items:center;gap:12px;color:var(--muted)';
-  loading.innerHTML = '<span class="loading-spinner" style="width:20px;height:20px;border-width:3px;margin:0;flex:0 0 auto"></span><span>Loading section content...</span>';
-  page.appendChild(loading);
-}
-
-function triggerSectionContent(page) {
-  if (!page) return;
-  if (clickTimer) window.clearTimeout(clickTimer);
-  showInlineLoading(page);
-  clickTimer = window.setTimeout(() => {
-    renderSectionContent(page);
-    clickTimer = null;
-  }, 2300);
-}
-
 function logout() {
-  if (clickTimer) window.clearTimeout(clickTimer);
-  clickTimer = null;
   app.style.display = 'none';
   login.style.display = 'grid';
   document.getElementById('password').value = '';
@@ -260,24 +201,28 @@ function logout() {
 document.getElementById('logout').addEventListener('click', e => { e.preventDefault(); logout(); });
 document.getElementById('topLogout').addEventListener('click', logout);
 
-// Navigation opens the selected section. After 2.3 seconds its message is
-// rendered inside the page itself, styled like ordinary call-log content.
+// Sidebar items and the Calls logged / Messages logged cards open their pages instantly.
 app.addEventListener('click', e => {
-  const logoutControl = e.target.closest('#logout, #topLogout');
-  if (logoutControl) return;
+  if (e.target.closest('#logout, #topLogout')) return;
   const navLink = e.target.closest('a.nav[data-page]');
-  if (navLink) {
-    e.preventDefault();
-    const pageName = navLink.dataset.page;
-    showPage(pageName);
-    triggerSectionContent(document.getElementById('page-' + pageName));
-    return;
-  }
-  const interactive = e.target.closest('a, button, input, label, [role="button"], .metric-click, .plan-card');
-  if (!interactive) return;
+  const metricCard = e.target.closest('.metric-click[data-page]');
+  const target = navLink || metricCard;
+  if (!target) return;
   e.preventDefault();
-  const activePage = document.querySelector('.page.active');
-  triggerSectionContent(activePage);
-}, true);
+  showPage(target.dataset.page);
+});
+
+// Support keyboard activation for the two clickable dashboard summary cards.
+app.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.metric-click[data-page]')) {
+    e.preventDefault();
+    showPage(e.target.dataset.page);
+  }
+});
+
+// Keep the displayed sync percentage at 100% without starting a loading animation.
+document.getElementById('sync').addEventListener('click', () => {
+  document.getElementById('syncStatus').textContent = '● Sync status: 100%';
+});
 </script>
 </body></html>
