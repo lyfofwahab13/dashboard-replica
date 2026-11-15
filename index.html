@@ -35,7 +35,7 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 .map:before,.map:after{content:"";position:absolute;width:140%;height:1px;background:#30445a;transform:rotate(-24deg)}.map:after{transform:rotate(35deg)}
 .map span{z-index:1;background:#101923;border:1px solid #33465d;border-radius:20px;padding:7px 12px;font-size:11px}
 .table{width:100%;border-collapse:collapse;margin-top:8px}.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);font-size:12px}.table th{color:var(--muted);font-weight:500}.pill{font-size:10px;color:#86d9b7;background:#123328;padding:4px 8px;border-radius:20px}
-.page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}
+.page{display:none}.page.active{display:block}.empty-note{color:var(--muted);font-size:12px;padding:18px 0}.sync-error{margin-top:18px;padding:22px;color:#ff9a9a;border-color:#633b43;background:#21171b;line-height:1.6;font-size:14px}.overview-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));margin:18px 0}.overview-shortcuts .metric-click{min-height:82px;display:flex;flex-direction:column;justify-content:center;gap:10px}
 .mobile-menu{display:none}
 
 
@@ -92,36 +92,22 @@ h1{font-size:24px;margin:0 0 7px}.sub{color:var(--muted);margin:0 0 24px}
 </aside>
 <main class="main">
   <div class="topbar"><input class="search" id="search" placeholder="⌕  Search dashboard..."><div class="top-actions"><span class="status" id="syncStatus">● Sync status: 100%</span><button class="ghost" id="sync">↻ <span class="sync-label">Sync</span></button><button class="ghost" id="topLogout">Log out</button></div></div>
-  <section class="page active" id="page-overview">
-    <h1>Welcome to your dashboard</h1><p class="sub">Your activity at a glance</p>
-    <div class="section-head"><h2>Dashboard overview</h2><span class="tiny" id="updated">Last updated: just now</span></div>
-    <div class="grid">
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Open calls log" data-page="calls"><div class="metric-label">Calls logged</div><div class="metric">20</div><div class="metric-foot">↑ 8.2% this week</div></div>
-      <div class="card metric-click" role="button" tabindex="0" aria-label="Open messages log" data-page="messages"><div class="metric-label">Messages logged</div><div class="metric">120</div><div class="metric-foot">↑ 12.4% this week</div></div>
-      <div class="card"><div class="metric-label">Location logs</div><div class="metric">—</div><div class="metric-foot">Sample data only</div></div>
-      <div class="card"><div class="metric-label">Firewall traffic</div><div class="metric">1.2k</div><div class="metric-foot">Within normal range</div></div>
+<section class="page active" id="page-overview">
+    <h1>Dashboard overview</h1>
+    <div class="grid overview-shortcuts">
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Open calls log" data-page="calls"><div class="metric-label">Calls logged</div><div class="metric-foot">Open section</div></div>
+      <div class="card metric-click" role="button" tabindex="0" aria-label="Open messages log" data-page="messages"><div class="metric-label">Messages logged</div><div class="metric-foot">Open section</div></div>
     </div>
-    <div class="two" style="margin-top:14px">
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Visibility overview</h2><span class="tiny">Recent activity</span></div><div style="display:flex;align-items:end;gap:8px;height:125px;padding:8px 0 0">
-        <div style="height:42%;flex:1;background:#24436a;border-radius:5px 5px 0 0"></div><div style="height:61%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:48%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:80%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:67%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div><div style="height:92%;flex:1;background:#4c8dff;border-radius:5px 5px 0 0"></div><div style="height:72%;flex:1;background:#315e96;border-radius:5px 5px 0 0"></div>
-      </div><div class="tiny" style="display:flex;justify-content:space-between;margin-top:8px"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Device information</h2><span class="status">● Demo active</span></div><div class="device"><div><b>Device not connected</b><div class="tiny" style="margin-top:5px">Connect an authorized device source to display details.</div></div><span style="font-size:26px">▣</span></div><div class="device-meta"><div><small>Device ID</small><strong>Not available</strong></div><div><small>Model</small><strong>Not available</strong></div><div><small>Network</small><strong>Not connected</strong></div><div><small>Connection</small><strong>Not connected</strong></div></div></div>
-    </div>
-    <div class="two" style="margin-top:14px">
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Recent activity</h2><span class="tiny">Recent entries</span></div>
-        <div class="empty-note">No activity records have been connected.</div><span class="tiny">Nov 11</span></div>
-      </div>
-      <div class="card"><div class="section-head" style="margin-top:0"><h2>Location preview</h2><span class="tiny">Illustrative only</span></div><div class="map"><span>⌖  Map unavailable</span></div><div class="tiny" style="margin-top:10px">No location source is connected.</div></div>
-    </div>
+    <div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div>
   </section>
-  <section class="page" id="page-insights"><h1>Speed Insights</h1><p class="sub">Dashboard performance overview</p><div class="grid"><div class="card"><div class="metric-label">Page response</div><div class="metric">124 ms</div><div class="metric-foot">Demo metric</div></div><div class="card"><div class="metric-label">Uptime</div><div class="metric">99.9%</div><div class="metric-foot">Illustrative</div></div></div></section>
-  <section class="page" id="page-messages"><h1>Messages</h1><p class="sub">Example message records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>PREVIEW</th><th>TIME</th><th>TYPE</th></tr><tr><td>Alex (demo)</td><td>Sample message preview</td><td>10:42 AM</td><td><span class="pill">Received</span></td></tr><tr><td>Jordan (demo)</td><td>Another fictional entry</td><td>Yesterday</td><td><span class="pill">Sent</span></td></tr></table></div></section>
-  <section class="page" id="page-calls"><h1>Calls</h1><p class="sub">Example call records</p><div class="card"><table class="table"><tr><th>CONTACT</th><th>DIRECTION</th><th>DURATION</th><th>DATE</th></tr><tr><td>Alex (demo)</td><td>Outgoing</td><td>04:32</td><td>Today</td></tr><tr><td>Jordan (demo)</td><td>Incoming</td><td>02:18</td><td>Yesterday</td></tr></table></div></section>
-  <section class="page" id="page-locations"><h1>Location History</h1><p class="sub">Location history</p><div class="card"><div class="map" style="height:260px"><span>⌖  Location map placeholder</span></div><p class="empty-note">Connect an authorized location source to display data. This replica does not access GPS or track devices.</p></div></section>
-  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><p class="sub">Demo section</p><div class="card empty-note">No message source is connected.</div></section>
-  <section class="page" id="page-instagram"><h1>Instagram</h1><p class="sub">App section preview</p><div class="card empty-note">No Instagram account is connected.</div></section>
-  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><p class="sub">App section preview</p><div class="card empty-note">No WhatsApp account is connected.</div></section>
-  <section class="page" id="page-device"><h1>Device information</h1><p class="sub">Device profile</p><div class="card device-meta"><div><small>Device ID</small><strong>Not available</strong></div><div><small>Model</small><strong>Not available</strong></div><div><small>Device status</small><strong>Not connected</strong></div><div><small>Network</small><strong>Not connected</strong></div></div></section>
+  <section class="page" id="page-insights"><h1>Speed Insights</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-messages"><h1>Messages</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-calls"><h1>Calls</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-locations"><h1>Location History</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-hidden"><h1>Hidden Messages</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-instagram"><h1>Instagram</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-whatsapp"><h1>WhatsApp</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
+  <section class="page" id="page-device"><h1>Device information</h1><div class="card sync-error" role="status">Data sync error: All data is corrupted and cannot be recovered. As a result, no data is currently available for this section</div></section>
   <p class="tiny" style="margin-top:28px">DASHV23 · Metrics are manually entered; no private device data is collected.</p>
   <p class="tiny" style="margin-top:8px">Storage plan details are a preview; this site does not process payments or activate cloud storage.</p>
 </main>
@@ -166,6 +152,12 @@ const DEMO_PASSWORD = "098765";
 const login = document.getElementById('login');
 const app = document.getElementById('app');
 
+// Ensure only the overview section is visible when the dashboard first opens.
+document.querySelectorAll('main .page').forEach(page => {
+  page.style.display = page.id === 'page-overview' ? 'block' : 'none';
+  page.setAttribute('aria-hidden', page.id === 'page-overview' ? 'false' : 'true');
+});
+
 // Validate the dashboard password and show the dashboard on success.
 document.getElementById('loginForm').addEventListener('submit', event => {
   event.preventDefault();
@@ -183,14 +175,22 @@ document.getElementById('loginForm').addEventListener('submit', event => {
     passwordInput.select();
   }
 });
-// Navigation is immediate; no buffering or delayed loading state is shown.
+// Show the requested section immediately and explicitly hide all other sections.
 function showPage(pageName) {
-  document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-  const page = document.getElementById('page-' + pageName);
-  if (page) page.classList.add('active');
+  const targetId = 'page-' + pageName;
+  const targetPage = document.getElementById(targetId);
+  if (!targetPage) return;
+
+  document.querySelectorAll('main .page').forEach(page => {
+    const isTarget = page.id === targetId;
+    page.classList.toggle('active', isTarget);
+    page.style.display = isTarget ? 'block' : 'none';
+    page.setAttribute('aria-hidden', isTarget ? 'false' : 'true');
+  });
   document.querySelectorAll('.nav[data-page]').forEach(link => {
     link.classList.toggle('active', link.dataset.page === pageName);
   });
+  if (location.hash !== '#' + pageName) history.replaceState(null, '', '#' + pageName);
 }
 
 function logout() {
@@ -201,23 +201,22 @@ function logout() {
 document.getElementById('logout').addEventListener('click', e => { e.preventDefault(); logout(); });
 document.getElementById('topLogout').addEventListener('click', logout);
 
-// Sidebar items and the Calls logged / Messages logged cards open their pages instantly.
-app.addEventListener('click', e => {
-  if (e.target.closest('#logout, #topLogout')) return;
-  const navLink = e.target.closest('a.nav[data-page]');
-  const metricCard = e.target.closest('.metric-click[data-page]');
-  const target = navLink || metricCard;
-  if (!target) return;
-  e.preventDefault();
-  showPage(target.dataset.page);
+// Bind navigation directly so summary cards and sidebar links always open their content.
+document.querySelectorAll('a.nav[data-page], .metric-click[data-page]').forEach(control => {
+  control.addEventListener('click', event => {
+    event.preventDefault();
+    showPage(control.dataset.page);
+  });
 });
 
-// Support keyboard activation for the two clickable dashboard summary cards.
-app.addEventListener('keydown', e => {
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.metric-click[data-page]')) {
-    e.preventDefault();
-    showPage(e.target.dataset.page);
-  }
+// Support keyboard activation for the Calls and Messages summary cards.
+document.querySelectorAll('.metric-click[data-page]').forEach(card => {
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      showPage(card.dataset.page);
+    }
+  });
 });
 
 // Keep the displayed sync percentage at 100% without starting a loading animation.
